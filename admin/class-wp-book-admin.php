@@ -121,5 +121,35 @@ class Wp_Book_Admin {
 	}
 
 
+	/************************
+	* Register the "Book Category " custom Taxonomy
+	************************/
+	function taxonomy_book_category() {
+		$labels = array(
+			'name' => _x( 'Categories', 'wp-book'),
+			'singular_name' => _x( 'Category', 'wp-book'),
+			'search_items'      => __( 'Search Category', 'wp-book' ),
+			'all_items'         => __( 'All Categories', 'wp-book' ),
+			'parent_item'       => __( 'Parent Category', 'wp-book' ),
+			'parent_item_colon' => __( 'Parent Category:', 'wp-book' ),
+			'edit_item'         => __( 'Edit Category', 'wp-book' ),
+			'update_item'       => __( 'Update Category', 'wp-book' ),
+			'add_new_item'      => __( 'Add New Category', 'wp-book' ),
+			'new_item_name'     => __( 'New Book Category', 'wp-book' ),
+			'menu_name'         => __( 'Book Category', 'wp-book' ),
+		);
+		$args = array(
+			'hierarchical'      => true, // make it hierarchical (like categories)
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+			'query_var'         => true,
+			'rewrite'           => [ 'slug' => 'book_category' ],
+		);
+		register_taxonomy( 'Book Category', [ 'book' ], $args );
+	}
+
+
 
 }
