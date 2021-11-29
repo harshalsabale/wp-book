@@ -163,6 +163,7 @@ class Wp_Book {
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'meta_box_book' );
 		$this->loader->add_action( 'save_post', $plugin_admin, 'save_book_meta_data' );
 		$this->loader->add_action( 'admin_menu', $plugin_admin, 'custom_setting_booksmenu' );
+		$this->loader->add_action( 'wp_dashboard_setup', $plugin_admin, 'dashboard_category_widget' );
 	}
 
 	/**

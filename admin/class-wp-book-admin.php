@@ -311,4 +311,43 @@ class Wp_Book_Admin {
 		require_once plugin_dir_path( __FILE__ ).'partials/wp-book-admin-display.php';
 	}
 
+	/*******************
+	* Create a custom dashboard widget which shows the top 5 book categories (based on count).
+	*******************/
+	public function dashboard_category_widget() {
+		wp_add_dashboard_widget(
+			'book_catgory_widget',
+			'Top 5 Book Categories',
+			array( $this, 'dashboard_widget_render' )
+		);
+	}
+
+	public function dashboard_widget_render(  ) {
+		$posts = get_posts( array(
+			'numberposts' => -1,
+			'post_type' => 'book',
+		) );
+		$taxonomies = get_taxonomies( '', 'names' );
+		$category = array();
+		foreach( $posts as $post ) {
+			$terms =  wp_get_post_terms( $post->ID, $taxonomies);
+			foreach( $terms as $term ) {
+				if(is_taxonomy_hierarchical( $term->taxonomy )) {
+					array_push($category, $term->name);
+				}
+			}
+		}
+		echo "<ol>";
+		$category_count = array_count_values($category);
+		arsort($category_count);
+		$i = 0;
+		foreach( array_keys($category_count) as $cat ) {
+			if( $i == 5 ) {
+				break;
+			}
+			echo "<li> ".$cat." </li>";
+			$i += 1;
+		}
+		echo "</ol>";
+	}
 }
