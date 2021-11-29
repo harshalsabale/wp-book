@@ -290,4 +290,25 @@ class Wp_Book_Admin {
 		}
 	}
 
+	
+	/*******************
+	* Custom setting
+	*******************/
+	public function custom_setting_booksmenu() {
+		add_options_page(
+			'booksmenu',
+			__('BooksMenu', 'wp-book'),
+			'manage_options',
+			'books_menu',
+			array($this, 'custom_setting_booksmenu_callback')
+		);
+	}
+
+	public function custom_setting_booksmenu_callback() {
+		if( !current_user_can( 'manage_options') ) {
+			return;
+		}
+		require_once plugin_dir_path( __FILE__ ).'partials/wp-book-admin-display.php';
+	}
+
 }

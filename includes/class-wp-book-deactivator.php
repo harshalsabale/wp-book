@@ -35,4 +35,9 @@ class Wp_Book_Deactivator {
 		$wpdb->query( "DROP TABLE IF EXISTS $table_name;" );
 	}
 
+	public function delete_cutom_option() {
+		delete_option( 'currency' );
+		delete_option( 'books_per_page' );
+	}
+
 }

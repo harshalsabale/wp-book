@@ -100,4 +100,40 @@ class Wp_Book_Public {
 
 	}
 
+
+	public function render_content_book( $content ) {
+		$currency = get_option( 'currency' );
+
+		$book_id = get_the_ID(  );
+		$price = intval($this-> get_book_meta( $book_id, '_book_price', true ) );
+
+		if( $currency == 'usd' ) {
+			$price =  round( $price / 75.12, 2 );
+		}
+		if( is_singular( ) && in_the_loop() && is_main_query( ) ) {
+			return $content . "<br> <h5> Price: ". strtoupper($currency)." ". $price ." </h5>";
+		}
+	}
+
+	public function display_books_per_page() {
+		if( is_page( ) ) {
+			$books_per_page = intval(get_option( 'books_per_page' ));
+			query_posts( array( 
+				'post_type' => 'book',
+				'post_per_page' => $books_per_page,
+			) );
+		}
+	}
+
+	public function get_book_meta( $id, $meta_key, $single=true ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix."book_meta";
+		$meta_value = $wpdb->get_row( "SELECT meta_value FROM $table_name WHERE book_id = $id AND meta_key = '$meta_key'" );
+		$meta_value = json_decode( json_encode( $meta_value ), true );
+		if (gettype( $meta_value ) != 'NULL') {
+			return $meta_value['meta_value'];
+		}
+		return '';
+	}
+
 }

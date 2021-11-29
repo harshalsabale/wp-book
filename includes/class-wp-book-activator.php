@@ -32,6 +32,9 @@ class Wp_Book_Activator {
 	public static function activate() {
 		require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
 		global $wpdb;
+
+		$this->intialize_options();
+
 		$charset_collate = $wpdb->get_charset_collate();
 		$table_name = $wpdb->prefix."book_meta";
 
@@ -50,6 +53,11 @@ class Wp_Book_Activator {
 		}
 
 		ob_clean();
+	}
+
+	public function intialize_options() {
+		add_option( 'currency', 'rs' );
+		add_option( 'books_per_page', '10' );
 	}
 
 }

@@ -162,6 +162,7 @@ class Wp_Book {
 		$this->loader->add_action( 'init', $plugin_admin, 'taxonomy_book_tag' );
 		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'meta_box_book' );
 		$this->loader->add_action( 'save_post', $plugin_admin, 'save_book_meta_data' );
+		$this->loader->add_action( 'admin_menu', $plugin_admin, 'custom_setting_booksmenu' );
 	}
 
 	/**
@@ -177,7 +178,8 @@ class Wp_Book {
 
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
-
+		$this->loader->add_filter( 'the_content', $plugin_public, 'render_content_book');
+		$this->loader->add_filter( 'pre_get_posts', $plugin_public, 'display_books_per_page' );
 	}
 
 	/**
