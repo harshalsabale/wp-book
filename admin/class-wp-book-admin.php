@@ -265,23 +265,28 @@ class Wp_Book_Admin {
 	*******************/
 	function save_book_meta_data( $post_id ) {
 		if ( array_key_exists( 'author', $_POST ) ) {
-			$this->update_book_meta( $post_id, '_book_author', $_POST['author'] );
+			$author = sanitize_text_field( $_POST['author'] );
+			$this->update_book_meta( $post_id, '_book_author', $author );
 		}
-
 		if ( array_key_exists( 'price', $_POST ) ) {
-			$this->update_book_meta( $post_id, '_book_price', $_POST['price'] );
+			$price = sanitize_text_field( $_POST['price'] );
+			$this->update_book_meta( $post_id, '_book_price', $price );
 		}
 		if ( array_key_exists( 'publisher', $_POST ) ) {
-			$this->update_book_meta( $post_id, '_book_publisher', $_POST['publisher'] );
+			$publisher = sanitize_text_field( $_POST['publisher'] );
+			$this->update_book_meta( $post_id, '_book_publisher', $publisher );
 		}
 		if ( array_key_exists( 'year', $_POST ) ) {
-			$this->update_book_meta( $post_id, '_book_year', $_POST['year'] );
+			$year = sanitize_text_field( $_POST['year'] );
+			$this->update_book_meta( $post_id, '_book_year', $year );
 		}
 		if ( array_key_exists( 'edition', $_POST ) ) {
-			$this->update_book_meta( $post_id, '_book_edition', $_POST['edition'] );
+			$edition = sanitize_text_field( $_POST['edition'] );
+			$this->update_book_meta( $post_id, '_book_edition', $edition );
 		}
 		if ( array_key_exists( 'url', $_POST ) ) {
-			$this->update_book_meta( $post_id, '_book_url', $_POST['url'] );
+			$url = sanitize_text_field( $_POST['url'] );
+			$this->update_book_meta( $post_id, '_book_url', $url );
 		}
 	}
 
