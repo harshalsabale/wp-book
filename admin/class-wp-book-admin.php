@@ -151,5 +151,33 @@ class Wp_Book_Admin {
 	}
 
 
+	/************************
+	* Register the "Book Tag " custom Taxonomy
+	************************/
+	function taxonomy_book_tag() {
+		$labels = array(
+			'name' => _x( 'Tags', 'wp-book' ),
+			'singular_name' => _x( 'Tag', 'wp-book' ),
+			'search_items'      => __( 'Search Tags', 'wp-book' ),
+			'all_items'         => __( 'All Tags', 'wp-book' ),
+			'edit_item'         => __( 'Edit Tag', 'wp-book' ),
+			'update_item'       => __( 'Update Tag', 'wp-book' ),
+			'add_new_item'      => __( 'Add New Tag', 'wp-book' ),
+			'new_item_name'     => __( 'New Tag Name', 'wp-book' ),
+			'menu_name'         => __( 'Book Tag', 'wp-book' ),
+		);
+		$args = array(
+			'hierarchical'      => false,
+			'labels'            => $labels,
+			'show_ui'           => true,
+			'show_admin_column' => true,
+			'show_in_rest'      => true,
+			'query_var'         => true,
+			'rewrite'           => [ 'slug' => 'book_tag' ],
+		);
+		register_taxonomy( 'Book Tag', [ 'book' ], $args );
+	}
+
+
 
 }
