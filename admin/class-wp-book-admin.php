@@ -188,7 +188,7 @@ class Wp_Book_Admin {
 	}
 
 	public function meta_box_html_author( $post ) {
-		$author = get_post_meta( $post->ID, '_book_author', true );
+		$author = $this->get_book_meta( $post->ID, '_book_author', true );
 		echo '<label for="author">'.
 				_e( "Enter Author Name: " )
 			.'</label>
@@ -196,7 +196,7 @@ class Wp_Book_Admin {
 	}
 
 	public function meta_box_html_price( $post ) {
-		$price = get_post_meta( $post->ID, '_book_price', true );
+		$price = $this->get_book_meta( $post->ID, '_book_price', true );
 		echo '<label for="price">'.
 				_e( "Enter Book Price (in Rupees): " )
 			.'</label>
@@ -204,7 +204,7 @@ class Wp_Book_Admin {
 	}
 
 	public function meta_box_html_publisher( $post ) {
-		$publisher = get_post_meta( $post->ID, '_book_publisher', true );
+		$publisher = $this->get_book_meta( $post->ID, '_book_publisher', true );
 		echo '<label for="publisher">'.
 				_e( "Enter Publisher: " )
 			.'</label>
@@ -212,7 +212,7 @@ class Wp_Book_Admin {
 	}
 
 	public function meta_box_html_year( $post ) {
-		$year = get_post_meta( $post->ID, '_book_year', true );
+		$year = $this->get_book_meta( $post->ID, '_book_year', true );
 		echo '<label for="year">'.
 				_e( "Enter Year of Publication: " )
 			.'</label>
@@ -220,7 +220,7 @@ class Wp_Book_Admin {
 	}
 
 	public function meta_box_html_edition( $post ) {
-		$edition = get_post_meta( $post->ID, '_book_edition', true );
+		$edition = $this->get_book_meta( $post->ID, '_book_edition', true );
 		echo '<label for="edition">'.
 				_e( "Enter Edition: " )
 			.'</label>
@@ -228,12 +228,36 @@ class Wp_Book_Admin {
 	}
 
 	public function meta_box_html_url( $post ) {
-		$url = get_post_meta( $post->ID, '_book_url', true );
+		$url = $this->get_book_meta( $post->ID, '_book_url', true );
 		echo '<label for="url">'.
 				_e( "Enter URL: " )
 			.'</label><br/>
 			<input type="text" id="url" name="url" value="'. esc_attr( $url ).' "/>';
 	}
+
+	public function get_book_meta( $id, $meta_key, $single=true ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix."book_meta";
+		$meta_value = $wpdb->get_row( "SELECT meta_value FROM $table_name WHERE book_id = $id AND meta_key = '$meta_key'" );
+		$meta_value = json_decode( json_encode( $meta_value ), true );
+		if (gettype( $meta_value ) != 'NULL') {
+			return $meta_value['meta_value'];
+		}
+		return '';
+	}
+
+	public function update_book_meta( $id, $meta_key, $value='' ) {
+		global $wpdb;
+		$table_name = $wpdb->prefix."book_meta";
+		$meta_key_exists = $this->get_book_meta( $id, $meta_key, true );
+		if ( $meta_key_exists == '' ) {
+			$execute = $wpdb->query( $wpdb->prepare( "INSERT INTO $table_name ( meta_id, book_id, meta_key, meta_value ) values ( Null, $id, '$meta_key', '$value' ) ;" ) );
+		}
+		else {
+			$execute = $wpdb->query( $wpdb->prepare( "UPDATE $table_name SET meta_value = '$value' WHERE book_id = $id AND meta_key = '$meta_key' ;" ) );
+		}
+	}
+
 
 
 	/*******************
@@ -241,23 +265,23 @@ class Wp_Book_Admin {
 	*******************/
 	function save_book_meta_data( $post_id ) {
 		if ( array_key_exists( 'author', $_POST ) ) {
-			update_post_meta( $post_id, '_book_author', $_POST['author'] );
+			$this->update_book_meta( $post_id, '_book_author', $_POST['author'] );
 		}
 
 		if ( array_key_exists( 'price', $_POST ) ) {
-			update_post_meta( $post_id, '_book_price', $_POST['price'] );
+			$this->update_book_meta( $post_id, '_book_price', $_POST['price'] );
 		}
 		if ( array_key_exists( 'publisher', $_POST ) ) {
-			update_post_meta( $post_id, '_book_publisher', $_POST['publisher'] );
+			$this->update_book_meta( $post_id, '_book_publisher', $_POST['publisher'] );
 		}
 		if ( array_key_exists( 'year', $_POST ) ) {
-			update_post_meta( $post_id, '_book_year', $_POST['year'] );
+			$this->update_book_meta( $post_id, '_book_year', $_POST['year'] );
 		}
 		if ( array_key_exists( 'edition', $_POST ) ) {
-			update_post_meta( $post_id, '_book_edition', $_POST['edition'] );
+			$this->update_book_meta( $post_id, '_book_edition', $_POST['edition'] );
 		}
 		if ( array_key_exists( 'url', $_POST ) ) {
-			update_post_meta( $post_id, '_book_url', $_POST['url'] );
+			$this->update_book_meta( $post_id, '_book_url', $_POST['url'] );
 		}
 	}
 
