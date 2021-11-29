@@ -178,6 +178,87 @@ class Wp_Book_Admin {
 		register_taxonomy( 'Book Tag', [ 'book' ], $args );
 	}
 
+	public function meta_box_book() {
+		add_meta_box( 'book_meta_author', __( 'Book Author', 'wp-book' ), array( $this, 'meta_box_html_author' ), 'book', 'side' );
+		add_meta_box( 'book_meta_price', __( 'Book Price', 'wp-book' ), array( $this, 'meta_box_html_price' ), 'book', 'side' );
+		add_meta_box( 'book_meta_Publisher', __( 'Book Publisher', 'wp-book' ), array( $this, 'meta_box_html_publisher' ), 'book', 'side' );
+		add_meta_box( 'book_meta_year', __( 'Book Year', 'wp-book' ), array( $this, 'meta_box_html_year' ), 'book', 'side' );
+		add_meta_box( 'book_meta_edition', __( 'Book Edition', 'wp-book' ), array( $this, 'meta_box_html_edition' ), 'book', 'side' );
+		add_meta_box( 'book_meta_url', __( 'Book URL', 'wp-book' ), array( $this, 'meta_box_html_url' ), 'book', 'side' );
+	}
 
+	public function meta_box_html_author( $post ) {
+		$author = get_post_meta( $post->ID, '_book_author', true );
+		echo '<label for="author">'.
+				_e( "Enter Author Name: " )
+			.'</label>
+			<input type="text" id="author" name="author" value="'. esc_attr( $author ).' "/>';
+	}
+
+	public function meta_box_html_price( $post ) {
+		$price = get_post_meta( $post->ID, '_book_price', true );
+		echo '<label for="price">'.
+				_e( "Enter Book Price (in Rupees): " )
+			.'</label>
+			<input type="text" id="price" name="price" value="'. esc_attr( $price ).' "/>';
+	}
+
+	public function meta_box_html_publisher( $post ) {
+		$publisher = get_post_meta( $post->ID, '_book_publisher', true );
+		echo '<label for="publisher">'.
+				_e( "Enter Publisher: " )
+			.'</label>
+			<input type="text" id="publisher" name="publisher" value="'. esc_attr( $publisher ).' "/>';
+	}
+
+	public function meta_box_html_year( $post ) {
+		$year = get_post_meta( $post->ID, '_book_year', true );
+		echo '<label for="year">'.
+				_e( "Enter Year of Publication: " )
+			.'</label>
+			<input type="text" id="year" name="year" value="'. esc_attr( $year ).' "/>';
+	}
+
+	public function meta_box_html_edition( $post ) {
+		$edition = get_post_meta( $post->ID, '_book_edition', true );
+		echo '<label for="edition">'.
+				_e( "Enter Edition: " )
+			.'</label>
+			<input type="text" id="edition" name="edition" value="'. esc_attr( $edition ).' "/>';
+	}
+
+	public function meta_box_html_url( $post ) {
+		$url = get_post_meta( $post->ID, '_book_url', true );
+		echo '<label for="url">'.
+				_e( "Enter URL: " )
+			.'</label><br/>
+			<input type="text" id="url" name="url" value="'. esc_attr( $url ).' "/>';
+	}
+
+
+	/*******************
+	* Save Post metadata
+	*******************/
+	function save_book_meta_data( $post_id ) {
+		if ( array_key_exists( 'author', $_POST ) ) {
+			update_post_meta( $post_id, '_book_author', $_POST['author'] );
+		}
+
+		if ( array_key_exists( 'price', $_POST ) ) {
+			update_post_meta( $post_id, '_book_price', $_POST['price'] );
+		}
+		if ( array_key_exists( 'publisher', $_POST ) ) {
+			update_post_meta( $post_id, '_book_publisher', $_POST['publisher'] );
+		}
+		if ( array_key_exists( 'year', $_POST ) ) {
+			update_post_meta( $post_id, '_book_year', $_POST['year'] );
+		}
+		if ( array_key_exists( 'edition', $_POST ) ) {
+			update_post_meta( $post_id, '_book_edition', $_POST['edition'] );
+		}
+		if ( array_key_exists( 'url', $_POST ) ) {
+			update_post_meta( $post_id, '_book_url', $_POST['url'] );
+		}
+	}
 
 }

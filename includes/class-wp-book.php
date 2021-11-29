@@ -160,6 +160,8 @@ class Wp_Book {
 		$this->loader->add_action( 'init', $plugin_admin, 'cpt_book' );
 		$this->loader->add_action( 'init', $plugin_admin, 'taxonomy_book_category' );
 		$this->loader->add_action( 'init', $plugin_admin, 'taxonomy_book_tag' );
+		$this->loader->add_action( 'add_meta_boxes', $plugin_admin, 'meta_box_book' );
+		$this->loader->add_action( 'save_post', $plugin_admin, 'save_book_meta_data' );
 	}
 
 	/**
