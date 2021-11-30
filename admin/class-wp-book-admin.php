@@ -350,4 +350,67 @@ class Wp_Book_Admin {
 		}
 		echo "</ol>";
 	}
+
+
+
+	/*******************
+	* Create a gutenberg block widget to display books of selected category in the sidebar.
+	*******************/
+	function create_custom_block() {
+		$asset_file = include( plugin_dir_path( __FILE__ ) . 'build/index.asset.php' );
+		wp_register_script(
+			'custom-block-book',
+			plugins_url( 'build/index.js', __FILE__ ),
+			$asset_file['dependencies'],
+			$asset_file['version']
+		);
+
+		register_block_type( 'wp-book/custom-block-book', array(
+			'editor_script' => 'custom-block-book',
+			'render_callback' => array($this, 'custom_block_book_render')
+		) );
+	}
+
+	function custom_block_book_render( $attributes ) {
+		$books_per_page = get_option( 'books_per_page');
+		$posts = get_posts( array(
+			'numberposts' => -1,
+			'post_type' => 'book',
+			'tax_query' => array(
+				array(
+					'taxonomy' => 'Book Category',
+					'terms' => intval($attributes['selectedCategory']),
+					'include_children' => false
+				)
+			)
+		));
+		ob_start();
+		if(count($posts) == 0) {
+			echo "<h2>No Books!</h2>";
+		}
+		else{
+			$taxonomies = get_taxonomies( '', 'names' );
+			foreach($posts as $post) {
+				$category = '';
+				$tags = '';
+				$taxonomy =  wp_get_post_terms( $post->ID, $taxonomies);
+	
+				foreach($taxonomy as $one) {
+					if(is_taxonomy_hierarchical( $one->taxonomy )) {
+						$category .= $one->name . " ";
+					}
+					else {
+						$tags .= $one->name. ", ";
+					}
+				}
+				echo '<h2>'. $post->post_title .'</h2>';
+				echo '<h5> <u>Category</u>: ' .$category.'</h5>';
+				echo '<p> <u>Tags</u>: '.$tags.'</p>';
+				echo '<hr/>';
+			}
+		}
+		return ob_get_clean();
+	
+	}
+
 }
