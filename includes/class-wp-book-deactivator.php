@@ -31,6 +31,9 @@ class Wp_Book_Deactivator {
 	 */
 	public static function deactivate() {
 		global $wpdb;
+
+		$this->delete_cutom_option();
+
 		$table_name = $wpdb->prefix."book_meta";
 		$wpdb->query( "DROP TABLE IF EXISTS $table_name;" );
 	}

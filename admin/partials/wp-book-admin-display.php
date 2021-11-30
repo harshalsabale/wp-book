@@ -17,11 +17,14 @@
 
 <?php
 
-$success ='';
+$success = false;
 if( isset( $_POST[ 'books_per_page' ] ) && isset( $_POST[ 'currency' ] ) ) {
-    update_option( 'books_per_page', $_POST[ 'books_per_page' ] );
-    update_option( 'currency', $_POST[ 'currency' ] );
-    $success = 'success';
+    $value = sanitize_text_field( $_POST[ 'books_per_page' ] );
+    $status1 =  update_option( 'books_per_page', $value );
+    $status2 = update_option( 'currency', $_POST[ 'currency' ] );
+    if( $status1 || $status2){
+        $success = true;
+    }
 }
 
 $currency = get_option( 'currency');
@@ -30,7 +33,7 @@ $currency = get_option( 'currency');
 
 <div class="wrap">
     <h1>BooksMenu</h1>
-    <?php if( $success == 'success' ) {?>
+    <?php if( $success ) {?>
         <div id="setting-error-settings_updated" class="notice notice-success settings-error is-dismissible"> 
             <p>
                 <strong>Settings saved.</strong>
@@ -44,7 +47,7 @@ $currency = get_option( 'currency');
                     <label for="books_per_page">Books per Page</label>
                 </th>
                 <td>
-                    <input name="books_per_page" id="books_per_page" value="<?php echo get_option( 'books_per_page' ) ?>" class="regular-text" />
+                    <input type="number" name="books_per_page" id="books_per_page" value="<?php echo get_option( 'books_per_page' ) ?>" class="regular-text" />
                 </td>
             </tr>
             <tr>

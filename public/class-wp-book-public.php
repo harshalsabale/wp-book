@@ -110,19 +110,10 @@ class Wp_Book_Public {
 		if( $currency == 'usd' ) {
 			$price =  round( $price / 75.12, 2 );
 		}
-		if( is_singular( ) && in_the_loop() && is_main_query( ) ) {
+		if( is_singular( ) && in_the_loop() && is_main_query( ) && ! is_page( ) ) {
 			return $content . "<br> <h5> Price: ". strtoupper($currency)." ". $price ." </h5>";
 		}
-	}
-
-	public function display_books_per_page() {
-		if( is_page( ) ) {
-			$books_per_page = intval(get_option( 'books_per_page' ));
-			query_posts( array( 
-				'post_type' => 'book',
-				'post_per_page' => $books_per_page,
-			) );
-		}
+		return $content;
 	}
 
 	public function get_book_meta( $id, $meta_key, $single=true ) {
@@ -135,5 +126,68 @@ class Wp_Book_Public {
 		}
 		return '';
 	}
+
+	/*******************
+	* Create a shortcode [book] to display the book(s) information.
+	*******************/
+	public function book_shortcode( $atts ) {
+		if( ! is_page() ) return;
+		$str = '';
+		$books_per_page = intval(get_option( 'books_per_page' ));
+		$posts = get_posts( [
+			'post_type' => 'book',
+			'numberposts' => $books_per_page
+		] );
+		foreach( $posts as $post ) {
+			$category = '';
+			$tags = '';
+			$taxonomies = get_taxonomies( '', 'names' );
+			$terms =  wp_get_post_terms( $post->ID, $taxonomies );
+
+			foreach( $terms as $term ) {
+				if(is_taxonomy_hierarchical( $term->taxonomy )) {
+					$category .= $term->name . ", ";
+				}
+				else {
+					$tags .= $term->name. ", ";
+				}
+			}
+
+			$a = shortcode_atts( array(
+				'id' => $post->ID,
+				'author_name' => $this->get_book_meta( $post->ID, '_book_author', true ),
+				'year' => $this->get_book_meta( $post->ID, '_book_year', true ),
+				'category' => $category,
+				'tag' => $tags,
+				'publisher' => $this->get_book_meta( $post->ID, '_book_publisher', true )
+			), $atts);
+			$str .= "<table><tr>
+					<td>ID :</td> <td>{$a['id']}</td>
+				</tr>
+				<tr>
+					<td>Author Name :</td> <td>{$a['author_name']}</td>
+				</tr>
+				<tr>
+					<td>Year :</td> <td>{$a['year']}</td>
+				</tr>
+				<tr>
+					<td>Publisher :</td> <td>{$a['publisher']}</td>
+				</tr>
+				<tr>
+					<td>Category :</td> <td>{$a['category']}</td>
+				</tr>
+				<tr>
+					<td>Tags :</td> <td>{$a['tag']}</td>
+				</tr>
+				</table>";
+		}
+		return $str;
+	}
+
+	public function register_book_shortcode() {
+		add_shortcode( 'book', array( $this, 'book_shortcode' ) );
+	}
+
+
 
 }

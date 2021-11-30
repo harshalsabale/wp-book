@@ -180,7 +180,7 @@ class Wp_Book {
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_styles' );
 		$this->loader->add_action( 'wp_enqueue_scripts', $plugin_public, 'enqueue_scripts' );
 		$this->loader->add_filter( 'the_content', $plugin_public, 'render_content_book');
-		$this->loader->add_filter( 'pre_get_posts', $plugin_public, 'display_books_per_page' );
+		$this->loader->add_action( 'init', $plugin_public, 'register_book_shortcode');
 	}
 
 	/**
